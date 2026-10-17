@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alphabet Reasoning</title>
+<style>
+:root{color-scheme:dark;--bg:#0f1115;--card:#1a1d24;--line:#2a2f3a;--text:#e8eaf0;--muted:#8a91a3;--acc:#5eead4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.app{height:100%;display:flex;flex-direction:column;gap:clamp(6px,1.5vmin,12px);padding:clamp(6px,1.5vmin,14px)}
+.tabs{display:flex;gap:6px;flex:none}
+.tab{flex:1;min-width:0;white-space:nowrap;padding:clamp(8px,1.8vmin,14px) 2px;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:12px;font-size:clamp(11px,2.3vmin,18px);font-weight:600;cursor:pointer}
+.tab[aria-selected=true]{color:#0f1115;background:var(--acc);border-color:var(--acc)}
+.grid{flex:1;min-height:0;display:grid;gap:clamp(5px,1.2vmin,10px);grid-template-columns:repeat(var(--cols),1fr);grid-template-rows:repeat(var(--rows),1fr);--cols:9;--rows:3}
+@media (max-aspect-ratio:1/1){.grid{--cols:4;--rows:7}.quizcard{grid-column:span 2}}
+.card{container-type:size;background:var(--card);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqmin;min-height:0;min-width:0;overflow:hidden}
+.card.m{border-color:var(--acc)}
+.q{font-size:min(24cqh,22cqw);color:var(--muted);white-space:nowrap}
+.a{font-size:min(40cqh,34cqw);font-weight:700;color:var(--acc);white-space:nowrap;line-height:1}
+.d{font-size:min(12cqh,13cqw);color:var(--muted);white-space:nowrap}
+.foot{flex:none;text-align:center;color:var(--muted);font-size:clamp(10px,1.8vmin,13px)}
+.quizcard{cursor:pointer;border:2px dashed var(--acc)}
+.grid.tr{--cols:3;--rows:9}
+.grid.ot{--cols:3;--rows:5}
+@media (max-aspect-ratio:1/1){.grid.ot{--cols:2;--rows:7}}
+.grid.ot .row b{font-size:min(40cqh,14cqw)}
+.grid.ot .row span{font-size:min(30cqh,9cqw)}
+.row em{font-style:normal;color:var(--acc);font-weight:700}
+@media (max-aspect-ratio:1/1){.grid.tr{--cols:2;--rows:13}}
+.row{container-type:size;background:var(--card);border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;gap:3cqw;padding:0 3cqw;min-height:0;min-width:0;overflow:hidden}
+.row.m{border-color:var(--acc)}
+.row b{color:var(--acc);font-size:min(46cqh,9cqw);white-space:nowrap}
+.row i{font-style:normal;color:var(--text);font-size:min(36cqh,6.5cqw);white-space:nowrap}
+.row span{color:var(--muted);font-size:min(34cqh,6.5cqw);line-height:1.15}
+.qz-ic{font-size:min(30cqh,20cqw);color:var(--acc);line-height:1}
+.qz-t{font-size:min(20cqh,22cqw);font-weight:700;color:var(--text)}
+.qz{position:fixed;inset:0;z-index:5;background:var(--bg);display:flex;flex-direction:column;gap:clamp(6px,1.5vmin,12px);padding:clamp(6px,1.5vmin,14px);padding-top:calc(clamp(6px,1.5vmin,14px) + env(safe-area-inset-top,0px));padding-bottom:calc(clamp(6px,1.5vmin,14px) + env(safe-area-inset-bottom,0px))}
+.qz[hidden]{display:none}
+.qz-top{display:flex;justify-content:space-between;align-items:center;flex:none}
+.qz-x,.qz-n{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:clamp(8px,1.8vmin,14px) 16px;font-size:clamp(14px,2.6vmin,20px);font-weight:600;cursor:pointer}
+.qz-s{color:var(--muted);font-size:clamp(14px,2.6vmin,20px)}
+.qz-q{flex:1.2;min-height:0;container-type:size;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqmin}
+.qz-l{color:var(--muted);font-size:min(14cqh,7cqw)}
+.qz-b{color:var(--acc);font-weight:700;line-height:1;font-size:min(46cqh,30cqw)}
+.qz-o{flex:3;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:clamp(6px,1.5vmin,12px)}
+.opt{position:relative;container-type:size;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;min-height:0;min-width:0;padding:0}
+.opt span{font-size:min(36cqh,30cqw)}
+.opt.done{cursor:default}
+.opt.ok{background:#16a34a;border-color:#16a34a;color:#fff}
+.opt.no{background:#dc2626;border-color:#dc2626;color:#fff}
+.tk{position:absolute;top:6%;right:8%;font-style:normal;font-size:min(20cqh,16cqw)}
+.qz-n{flex:none;background:var(--acc);color:#0f1115;border-color:var(--acc)}
+.qz-n:disabled{opacity:.35;cursor:default}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-k="lt">A &rarr; 1</button>
+    <button class="tab" role="tab" data-k="op">Opposite</button>
+    <button class="tab" role="tab" data-k="nl">1 &rarr; A</button>
+    <button class="tab" role="tab" data-k="tr">No. Trick</button>
+    <button class="tab" role="tab" data-k="ot">Opp Trick</button>
+  </div>
+  <main class="grid" id="grid"></main>
+  <div class="foot" id="foot"></div>
+</div>
+<div class="qz" id="qz" hidden>
+  <div class="qz-top"><button class="qz-x" id="qzx">← Back</button><div class="qz-s" id="qzs"></div></div>
+  <div class="qz-q"><div class="qz-l" id="qzl"></div><div class="qz-b" id="qzb"></div></div>
+  <div class="qz-o" id="qzo"></div>
+  <button class="qz-n" id="qzn" disabled>Next ›</button>
+</div>
+<script>
+var L="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+var COL={ot:"#60a5fa",tr:"#f472b6",lt:"#5eead4",op:"#fbbf24",nl:"#a78bfa"};
+var FOOT={ot:"Opposite pairs: har pair ka position sum = 27 (A1 + Z26). Highlighted letters = pair",tr:"EJOTY = 5, 10, 15, 20, 25 anchor. Baaki number = anchor se plus/minus (T−1 = T se ek pehle)",lt:"A = 1 to Z = 26 \u00b7 EJOTY = 5, 10, 15, 20, 25",op:"Opposite letter \u00b7 position + opposite position = 27",nl:"Number to letter \u00b7 EJOTY = 5, 10, 15, 20, 25"};
+var grid=document.getElementById("grid"),foot=document.getElementById("foot");
+var cur="lt";
+try{var s=localStorage.getItem("ar-tab");if(s&&COL[s])cur=s}catch(e){}
+function card(q,a,d,m){return '<div class="card'+(m?' m':'')+'"><div class="q">'+q+'</div><div class="a">'+a+'</div>'+(d?'<div class="d">'+d+'</div>':'')+'</div>'}
+var HT=["Seedha A","Seedha B","Seedha C","Seedha D","Anchor E","Six = Fix","7 kiske pet me?","Digital 8, muh band","I know (9)","Anchor J","11 = Kings XI","12 baje Lion","Main tera (13) hero","14 Nov Children's Day","Anchor O","Ulta 6 = P","17 saal ka khatra: Queen","18 = Right to vote","T se ek pehle","T-20 match","Under 21","2 fingers victory V","3 jaisa aakhri = W","24 ghante / 4 kone","Anchor Y","Last = Z"];
+var OT=["<em>A</em> to <em>Z</em>","<em>B</em>o<em>Y</em>","<em>C</em>ra<em>X</em>","<em>D</em>oodh <em>W</em>ala","<em>EV</em>","<em>Fu</em>n","<em>G</em> <em>T</em> Road","<em>H</em>igh <em>S</em>chool","<em>I</em>ndian <em>R</em>ailways","<em>J</em>ack-<em>Q</em>ueen","<em>P K</em> (Movie)","<em>LO</em>VE","<em>M</em>a<em>n</em>"];
+function opptrick(){var h="",i;for(i=0;i<13;i++)h+='<div class="row"><b>'+L[i]+' ↔ '+L[25-i]+'</b><span>'+OT[i]+'</span></div>';return h}
+function trick(){var A=[5,10,15,20,25],h="",n,k,t,d;
+  for(n=1;n<=26;n++){t="";for(k=0;k<5;k++){d=n-A[k];if(d&&Math.abs(d)<=2)t=L[A[k]-1]+(d>0?"+":"−")+Math.abs(d)}
+    h+='<div class="row'+(n%5===0?' m':'')+'"><b>'+n+' → '+L[n-1]+'</b><i>'+t+'</i><span>'+HT[n-1]+'</span></div>'}
+  return h}
+function build(){
+  var h="",i,n,c,m;
+  for(i=0;i<26;i++){
+    n=i+1;c=L[i];m="EJOTY".indexOf(c)>-1;
+    if(cur==="lt")h+=card(c,n,"",m);
+    if(cur==="op")h+=card(c,L[25-i],n+" + "+(27-n)+" = 27",m);
+    if(cur==="nl")h+=card(n,c,"",m);
+  }
+  grid.className="grid"+(cur==="tr"||cur==="ot"?" "+cur:"");grid.innerHTML=cur==="tr"?trick():cur==="ot"?opptrick():h+'<div class="card quizcard" id="qcard" role="button"><div class="qz-ic">▶</div><div class="qz-t">Quiz</div></div>';
+  document.documentElement.style.setProperty("--acc",COL[cur]);
+  foot.textContent=FOOT[cur];
+  document.querySelectorAll(".tab").forEach(function(t){t.setAttribute("aria-selected",t.dataset.k===cur)});
+}
+document.querySelectorAll(".tab").forEach(function(t){t.onclick=function(){cur=t.dataset.k;try{localStorage.setItem("ar-tab",cur)}catch(e){}build()}});
+var qz=document.getElementById("qz"),qzs=document.getElementById("qzs"),qzl=document.getElementById("qzl"),qzb=document.getElementById("qzb"),qzo=document.getElementById("qzo"),qzn=document.getElementById("qzn");
+var sc=0,tot=0,last=-1,ans="",locked=false;
+function shuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function near(c){var p=[];for(var k=c-4;k<=c+4;k++)if(k!==c&&k>=0&&k<26)p.push(k);return shuf(p).slice(0,3)}
+function nextQ(){
+  var i;do{i=Math.floor(Math.random()*26)}while(i===last);last=i;
+  var lab,big,ci,fmt;
+  if(cur==="lt"){lab="Number of letter";big=L[i];ci=i;fmt=function(k){return k+1}}
+  if(cur==="op"){lab="Opposite of";big=L[i];ci=25-i;fmt=function(k){return L[k]}}
+  if(cur==="nl"){lab="Letter at position";big=i+1;ci=i;fmt=function(k){return L[k]}}
+  ans=String(fmt(ci));
+  var o=shuf(near(ci).concat([ci]));
+  qzl.textContent=lab;qzb.textContent=big;
+  qzo.innerHTML=o.map(function(k){return '<button class="opt" data-v="'+fmt(k)+'"><span>'+fmt(k)+'</span></button>'}).join("");
+  locked=false;qzn.disabled=true;
+}
+qzo.onclick=function(e){
+  var b=e.target.closest(".opt");if(!b||locked)return;
+  locked=true;tot++;
+  var ok=b.dataset.v===ans;if(ok)sc++;
+  qzo.querySelectorAll(".opt").forEach(function(x){x.classList.add("done");if(x.dataset.v===ans){x.classList.add("ok");x.insertAdjacentHTML("beforeend",'<i class="tk">✓</i>')}});
+  if(!ok){b.classList.add("no");b.insertAdjacentHTML("beforeend",'<i class="tk">✗</i>')}
+  qzs.textContent="Score "+sc+" / "+tot;qzn.disabled=false;
+};
+function openQ(){sc=0;tot=0;last=-1;qzs.textContent="Score 0 / 0";qz.hidden=false;nextQ()}
+document.getElementById("qzx").onclick=function(){qz.hidden=true};
+qzn.onclick=nextQ;
+grid.onclick=function(e){if(e.target.closest("#qcard"))openQ()};
+build();
+</script>
+</body>
+</html>
